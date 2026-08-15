@@ -1,0 +1,1880 @@
+<!DOCTYPE html>  <html lang="gu">  
+<head>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  
+<title>શ્રી ગણેશાય નમઃ - બિલ એપ</title>  <style>  
+*{box-sizing:border-box}  
+body{  
+ margin:0;padding:10px;background:#eee;  
+ font-family:Arial,sans-serif;  
+}  
+.page{  
+ max-width:750px;margin:auto;background:white;  
+ padding:15px;border:2px solid #222;  
+}  
+h2{text-align:center;margin:5px}  
+.title{  
+ width:max-content;margin:8px auto 15px;  
+ padding:6px 20px;border-radius:20px;  
+ background:#1976d2;color:white;font-weight:bold;  
+}  
+.home{text-align:center;padding:20px 5px}  
+input,select{  
+ width:100%;padding:8px;margin:3px 0;  
+ border:1px solid #888;border-radius:4px;  
+}  
+.grid{  
+ display:grid;grid-template-columns:1fr 1fr;gap:8px;  
+}  
+table{  
+ width:100%;border-collapse:collapse;margin-top:12px;  
+}  
+th,td{  
+ border:1px solid #333;padding:4px;text-align:center;  
+}  
+th{font-size:13px}  
+td input{  
+ border:0;text-align:center;margin:0;  
+}  
+button{  
+ width:100%;padding:11px;margin-top:8px;  
+ border:0;border-radius:5px;  
+ background:#198754;color:white;font-size:16px;  
+}  
+.blue{background:#1976d2}  
+.dark{background:#444}  
+.orange{background:#f57c00}  
+.red{background:#dc3545}  
+.smallBtn{  
+ width:auto;padding:7px 10px;margin:2px;font-size:13px;  
+}  
+.hidden{display:none}  
+.summary{  
+ width:75%;margin-left:auto;margin-top:15px;  
+}  
+.summary div{  
+ display:grid;grid-template-columns:1fr 140px;  
+ align-items:center;border-bottom:1px solid #555;  
+ min-height:38px;  
+}  
+.big{font-size:18px;font-weight:bold}  
+.balance{  
+ color:red;font-size:20px;font-weight:bold;  
+}  
+.card{  
+ border:1px solid #999;padding:10px;margin-top:10px;  
+ border-radius:6px;  
+}  
+.billCard{  
+ border:2px solid #777;padding:10px;margin-top:10px;  
+ border-radius:8px;background:#fafafa;  
+}  
+.actions{display:flex;gap:5px}  
+.actions button{flex:1}  
+  
+@media(max-width:500px){  
+ .grid{grid-template-columns:1fr}  
+ .summary{width:100%}  
+ .actions{flex-direction:column}  
+}  
+  
+@media print{  
+ body{background:white;padding:0}  
+ .no-print{display:none!important}  
+ .page{border:2px solid #222}  
+}  
+</style>  </head>  <body>  <!-- ================= HOME ================= -->  <div class="page" id="home">  
+<div class="home">  <h2>|| શ્રી ગણેશાય નમઃ ||</h2>  <div class="title">બિલ એપ</div>  <button onclick="showFarmer()">🧾 ખેડૂત બિલ</button>
+
+<button class="blue" onclick="showTrader()">🏪 વેપારી બિલ</button>
+
+<button class="orange" onclick="showAccounts()">👤 વેપારી ખાતું</button>
+
+<button onclick="showTraderBills()">📁 વેપારી બિલ / ઝેરોક્ષ</button>
+
+<button class="dark" onclick="showSavedBills()">💾 સેવ થયેલા બિલ</button>
+
+</div>  
+</div>  <!-- ================= FARMER BILL ================= -->  <div class="page hidden" id="farmerPage">  <h2>|| શ્રી ગણેશાય નમઃ ||</h2>  
+<div class="title">ખેડૂત બિલ</div>  <div class="grid">  <div>  
+<label>GST No.:</label>  
+<input id="f_gst">  
+</div>  <div>  
+<label>બિલ નંબર:</label>  
+<input id="f_no">  
+</div>  <div>  
+<label>તા.:</label>  
+<input id="f_date" type="date">  
+</div>  <div>  
+<label>ખેડૂતનું નામ:</label>  
+<input id="f_farmer">  
+</div>  <div>  
+<label>માલ લેનાર વેપારી:</label>  
+<input id="f_trader" list="traderList">  
+<datalist id="traderList"></datalist>  
+</div>  </div>  <table>  
+<thead>  
+<tr>  
+<th>અ.નં.</th>  
+<th>માલની જાત</th>  
+<th>થેલા</th>  
+<th>વજન kg</th>  
+<th>ભાવ /20kg</th>  
+<th>કિંમત</th>  
+<th class="no-print">X</th>  
+</tr>  
+</thead>  <tbody id="farmerItems"></tbody>  
+</table>  <button class="blue no-print" onclick="addFarmerRow()">  
++ માલ ઉમેરો  
+</button>  <div class="summary">  <div>  
+<b>કુલ</b>  
+<span id="f_total">₹ 0.00</span>  
+</div>  <div>  
+<b>વારદાન +</b>  
+<span id="f_bardana">₹ 0.00</span>  
+</div>  <div>  
+<b>ભાડું +</b>  
+<input id="f_bhadu" type="number" value="0"  
+oninput="calcFarmer()">  
+</div>  <div>  
+<b>મજૂરી -</b>  
+<input id="f_majuri" type="number" value="0"  
+oninput="calcFarmer()">  
+</div>  <div class="big">  
+<b>કુલ રકમ</b>  
+<span id="f_grand">₹ 0.00</span>  
+</div>  </div>  <label><b>અંકે રૂપિયા:</b></label>
+<input id="f_words">
+
+<div class="no-print">  <button id="farmerSaveBtn" onclick="saveFarmer()">  
+💾 બિલ Save કરો  
+</button>  <button class="blue" onclick="window.print()">  
+🖨️ Print / PDF  
+</button>  <button class="dark" onclick="goHome()">  
+🏠 મુખ્ય પેજ  
+</button>  </div>  
+</div>  <!-- ================= TRADER BILL ================= -->  <div class="page hidden" id="traderPage">  <h2>|| શ્રી ગણેશાય નમઃ ||</h2>  
+<div class="title">વેપારી બિલ</div>  <div class="grid">  <div>  
+<label>બિલ નંબર:</label>  
+<input id="t_no">  
+</div>  <div>  
+<label>તા.:</label>  
+<input id="t_date" type="date">  
+</div>  <div>  
+<label>પેઢીનું નામ:</label>  
+<input id="t_firm">  
+</div>  <div>  
+<label>વેપારીનું નામ:</label>  
+<input id="t_buyer" list="traderList2">  
+<datalist id="traderList2"></datalist>  
+</div>  <div>  
+<label>ગામનું નામ:</label>  
+<input id="t_village">  
+</div>  </div>  <table>  
+<thead>  
+<tr>  
+<th>અ.નં.</th>  
+<th>માલની જાત</th>  
+<th>થેલા</th>  
+<th>વજન</th>  
+<th>ભાવ /20kg</th>  
+<th>કિંમત</th>  
+<th class="no-print">X</th>  
+</tr>  
+</thead>  <tbody id="traderItems"></tbody>  
+</table>  <button class="blue no-print" onclick="addTraderRow()">  
++ માલ ઉમેરો  
+</button>  <div class="summary">  <div>  
+<b>કુલ કિંમત</b>  
+<span id="t_total">₹ 0.00</span>  
+</div>  <div>  
+<b>કમિશન 1.5% +</b>  
+<span id="t_commission">₹ 0.00</span>  
+</div>  <div>  
+<b>માર્કેટ ફી +</b>  
+<span id="t_marketing">₹ 0.00</span>  
+</div>  <div>  
+<b>વારદાન +</b>  
+<span id="t_bardana">₹ 0.00</span>  
+</div>  <div>  
+<b>મજૂરી +</b>  
+<span id="t_majuri">₹ 0.00</span>  
+</div>  <div>  
+<b>ભાડું +</b>  
+<input id="t_bhadu" type="number" value="0"  
+oninput="calcTrader()">  
+</div>  <div class="big">  
+<b>કુલ રકમ</b>  
+<span id="t_grand">₹ 0.00</span>  
+</div>  </div>  <label><b>અંકે રૂપિયા:</b></label>
+<input id="t_words">
+
+<div class="no-print">  <button id="traderSaveBtn" onclick="saveTrader()">  
+💾 વેપારી બિલ Save કરો  
+</button>  <button class="blue" onclick="window.print()">  
+🖨️ Print / PDF  
+</button>  <button class="dark" onclick="goHome()">  
+🏠 મુખ્ય પેજ  
+</button>  </div>  
+</div>  <!-- ================= ACCOUNTS ================= -->  <div class="page hidden" id="accountsPage">  <h2>|| શ્રી ગણેશાય નમઃ ||</h2>  
+<div class="title">વેપારી ખાતું</div>  <select id="accountTrader" onchange="showAccount()">  
+<option value="">-- વેપારી પસંદ કરો --</option>  
+</select>  <div id="accountDetails"></div>  <button class="dark" onclick="goHome()">  
+🏠 મુખ્ય પેજ  
+</button>  </div>  <!-- ================= TRADER BILLS ================= -->  <div class="page hidden" id="traderBillsPage">  <h2>|| શ્રી ગણેશાય નમઃ ||</h2>  
+<div class="title">📁 વેપારી બિલ / ઝેરોક્ષ</div>  <label><b>તારીખ પસંદ કરો:</b></label>
+
+<input id="traderBillDate" type="date"  
+onchange="showTraderBills()">
+
+<div id="traderBillList"></div>  <button class="dark" onclick="goHome()">  
+🏠 મુખ્ય પેજ  
+</button>  </div>  <!-- ================= SAVED BILLS ================= -->  <div class="page hidden" id="savedBillsPage">  <h2>|| શ્રી ગણેશાય નમઃ ||</h2>  
+<div class="title">💾 સેવ થયેલા બિલ</div>  <label><b>તારીખ:</b></label>
+
+<input id="savedBillDate" type="date"  
+onchange="showSavedBills()">
+
+<div id="savedBillList"></div>  <button class="dark" onclick="goHome()">  
+🏠 મુખ્ય પેજ  
+</button>  </div>  <!-- ================= PRINT ================= -->  <div class="page hidden" id="printPage">  <div id="printContent"></div>  <div class="no-print">  <button class="blue" onclick="window.print()">  
+🖨️ Print / Xerox  
+</button>  <button class="dark" onclick="goBackFromPrint()">  
+⬅️ પાછા  
+</button>  </div>  
+</div>  <script>  
+  
+/* ================= FIXED PLOT ================= */  
+  
+const FIXED_PLOT = "40";  
+  
+  
+/* ================= DATA ================= */  
+  
+let bills =  
+JSON.parse(localStorage.getItem("allBills") || "[]");  
+  
+let transactions =  
+JSON.parse(localStorage.getItem("transactions") || "[]");  
+  
+  
+/* ================= DATE ================= */  
+  
+const today =  
+new Date().toISOString().split("T")[0];  
+  
+document.getElementById("f_date").value=today;  
+document.getElementById("t_date").value=today;  
+document.getElementById("traderBillDate").value=today;  
+document.getElementById("savedBillDate").value=today;  
+  
+  
+/* ================= PAGE ================= */  
+  
+let previousPage="home";  
+  
+function hideAll(){  
+  
+[  
+"home",  
+"farmerPage",  
+"traderPage",  
+"accountsPage",  
+"traderBillsPage",  
+"savedBillsPage",  
+"printPage"  
+  
+].forEach(id=>{  
+document.getElementById(id).classList.add("hidden");  
+});  
+  
+}  
+  
+function goHome(){  
+  
+hideAll();  
+  
+document.getElementById("home")  
+.classList.remove("hidden");  
+  
+previousPage="home";  
+}  
+  
+function showFarmer(){  
+  
+hideAll();  
+  
+document.getElementById("farmerPage")  
+.classList.remove("hidden");  
+  
+loadTraderNames();  
+  
+previousPage="farmerPage";  
+}  
+  
+function showTrader(){  
+  
+hideAll();  
+  
+document.getElementById("traderPage")  
+.classList.remove("hidden");  
+  
+loadTraderNames();  
+  
+previousPage="traderPage";  
+}  
+  
+  
+/* ================= TRADER NAMES ================= */  
+  
+function getTraders(){  
+  
+let names=[];  
+  
+bills.forEach(b=>{  
+if(b.trader && !names.includes(b.trader))  
+names.push(b.trader);  
+});  
+  
+transactions.forEach(t=>{  
+if(t.trader && !names.includes(t.trader))  
+names.push(t.trader);  
+});  
+  
+return names;  
+}  
+  
+function loadTraderNames(){  
+  
+let a=document.getElementById("traderList");  
+let b=document.getElementById("traderList2");  
+  
+a.innerHTML="";  
+b.innerHTML="";  
+  
+getTraders().forEach(name=>{  
+  
+let x=document.createElement("option");  
+x.value=name;  
+a.appendChild(x);  
+  
+let y=document.createElement("option");  
+y.value=name;  
+b.appendChild(y);  
+  
+});  
+}  
+  
+  
+/* ================= ACCOUNTS ================= */  
+  
+function showAccounts(){  
+  
+hideAll();  
+  
+document.getElementById("accountsPage")  
+.classList.remove("hidden");  
+  
+loadAccounts();  
+  
+previousPage="accountsPage";  
+}  
+  
+function loadAccounts(){  
+  
+let select=document.getElementById("accountTrader");  
+  
+select.innerHTML=  
+`<option value="">-- વેપારી પસંદ કરો --</option>`;  
+  
+getTraders().forEach(name=>{  
+  
+let op=document.createElement("option");  
+op.value=name;  
+op.textContent=name;  
+  
+select.appendChild(op);  
+  
+});  
+}  
+  
+function showAccount(){  
+  
+let trader=  
+document.getElementById("accountTrader").value;  
+  
+let box=document.getElementById("accountDetails");  
+  
+box.innerHTML="";  
+  
+if(!trader)return;  
+  
+let list=  
+transactions.filter(t=>t.trader===trader);  
+  
+let udhar=0;  
+let jama=0;  
+  
+list.forEach(t=>{  
+  
+if(t.type==="જમા")  
+jama+=Number(t.amount);  
+else  
+udhar+=Number(t.amount);  
+  
+});  
+  
+let balance=udhar-jama;  
+  
+let html=`  
+  
+<div class="card">  
+  
+<h3>👤 ${escapeHtml(trader)}</h3>  
+  
+<p>કુલ ઉધાર:  
+<b>₹${udhar.toFixed(2)}</b></p>  
+  
+<p>કુલ જમા:  
+<b>₹${jama.toFixed(2)}</b></p>  
+  
+<div class="balance">  
+બાકી રકમ:<br>  
+🔴 ₹${balance.toFixed(2)}  
+</div>  
+  
+</div>  
+  
+<div class="card">  
+  
+<h3>📋 ખાતાની વિગતો</h3>  
+  
+<table>  
+  
+<tr>  
+<th>તારીખ</th>  
+<th>બિલ નં.</th>  
+<th>વિગત</th>  
+<th>ઉધાર</th>  
+<th>જમા</th>  
+</tr>  
+`;  
+  
+list.forEach(t=>{  
+  
+html+=`  
+  
+<tr>  
+  
+<td>${t.date}</td>  
+  
+<td>${t.billNo||"-"}</td>  
+  
+<td>${escapeHtml(t.detail||"")}</td>  
+  
+<td>  
+${t.type==="જમા" ? "-" :  
+"₹"+Number(t.amount).toFixed(2)}  
+</td>  
+  
+<td>  
+${t.type==="જમા" ?  
+"₹"+Number(t.amount).toFixed(2) : "-"}  
+</td>  
+  
+</tr>  
+`;  
+});  
+  
+html+=`  
+  
+</table>  
+</div>  
+  
+<div class="card no-print">  
+  
+<h3>💰 વેપારી પાસેથી જમા</h3>  
+  
+<input id="paymentDate"  
+type="date"  
+value="${today}">  
+  
+<input id="paymentAmount"  
+type="number"  
+placeholder="જમા રકમ">  
+  
+<input id="paymentNote"  
+placeholder="નોંધ">  
+  
+<button onclick="addPayment()">  
+💰 જમા કરો  
+</button>  
+  
+</div>  
+`;  
+  
+box.innerHTML=html;  
+}  
+  
+  
+/* ================= PAYMENT ================= */  
+  
+function addPayment(){  
+  
+let trader=  
+document.getElementById("accountTrader").value;  
+  
+let date=  
+document.getElementById("paymentDate").value;  
+  
+let amount=  
+parseFloat(document.getElementById("paymentAmount").value)||0;  
+  
+let note=  
+document.getElementById("paymentNote").value.trim();  
+  
+if(!trader){  
+alert("⚠️ વેપારી પસંદ કરો.");  
+return;  
+}  
+  
+if(amount<=0){  
+alert("⚠️ જમા રકમ નાખો.");  
+return;  
+}  
+  
+transactions.push({  
+  
+id:"P_"+Date.now()+"_"+Math.random(),  
+date:date,  
+trader:trader,  
+type:"જમા",  
+amount:amount,  
+billNo:"",  
+detail:note||"વેપારી પાસેથી જમા"  
+  
+});  
+  
+saveData();  
+  
+alert("✅ ₹"+amount.toFixed(2)+" જમા થઈ ગયું.");  
+  
+showAccount();  
+}  
+  
+  
+/* ================= FARMER ROW ================= */  
+  
+let fRows=0;  
+  
+function addFarmerRow(){  
+  
+fRows++;  
+  
+let tr=document.createElement("tr");  
+  
+tr.innerHTML=`  
+  
+<td class="f_sr">${fRows}</td>  
+  
+<td>  
+<input class="f_name" placeholder="માલ">  
+</td>  
+  
+<td>  
+<input class="f_bags"  
+type="number"  
+value="0"  
+oninput="calcFarmer()">  
+</td>  
+  
+<td>  
+<input class="f_weight"  
+type="number"  
+value="0"  
+oninput="calcFarmer()">  
+</td>  
+  
+<td>  
+<input class="f_rate"  
+type="number"  
+value="0"  
+oninput="calcFarmer()">  
+</td>  
+  
+<td class="f_amount">₹ 0.00</td>  
+  
+<td class="no-print">  
+  
+<button class="red smallBtn"  
+onclick="deleteFarmer(this)">  
+X  
+</button>  
+  
+</td>  
+`;  
+  
+document.getElementById("farmerItems")  
+.appendChild(tr);  
+}  
+  
+function deleteFarmer(btn){  
+  
+btn.closest("tr").remove();  
+  
+document.querySelectorAll("#farmerItems tr")  
+.forEach((row,index)=>{  
+row.querySelector(".f_sr").innerText=index+1;  
+});  
+  
+calcFarmer();  
+}  
+  
+  
+/* ================= FARMER CALC ================= */  
+  
+function calcFarmer(){  
+  
+let total=0;  
+let bags=0;  
+  
+document.querySelectorAll("#farmerItems tr")  
+.forEach(row=>{  
+  
+let b=parseFloat(  
+row.querySelector(".f_bags").value)||0;  
+  
+let w=parseFloat(  
+row.querySelector(".f_weight").value)||0;  
+  
+let r=parseFloat(  
+row.querySelector(".f_rate").value)||0;  
+  
+let amount=w*r/20;  
+  
+bags+=b;  
+total+=amount;  
+  
+row.querySelector(".f_amount")  
+.innerText="₹ "+amount.toFixed(2);  
+  
+});  
+  
+let bardana=bags*15;  
+  
+let bhadu=parseFloat(  
+document.getElementById("f_bhadu").value)||0;  
+  
+let majuri=parseFloat(  
+document.getElementById("f_majuri").value)||0;  
+  
+let grand=  
+total+bardana+bhadu-majuri;  
+  
+document.getElementById("f_total")  
+.innerText="₹ "+total.toFixed(2);  
+  
+document.getElementById("f_bardana")  
+.innerText="₹ "+bardana.toFixed(2);  
+  
+document.getElementById("f_grand")  
+.innerText="₹ "+grand.toFixed(2);  
+}  
+  
+  
+/* ================= AUTO TRADER CALC ================= */  
+  
+function calculateAutoTrader(items,bhadu){  
+  
+let total=0;  
+let bags=0;  
+  
+items.forEach(item=>{  
+  
+let w=Number(item.weight)||0;  
+let r=Number(item.rate)||0;  
+let b=Number(item.bags)||0;  
+  
+total+=w*r/20;  
+bags+=b;  
+  
+});  
+  
+let commission=total*1.5/100;  
+let marketing=bags*3;  
+let bardana=bags*15;  
+  
+/* મજૂરી ₹1 FIX */  
+  
+let majuri=bags*1;  
+  
+let rent=Number(bhadu)||0;  
+  
+let grand=  
+total+  
+commission+  
+marketing+  
+bardana+  
+majuri+  
+rent;  
+  
+return{  
+total,  
+bags,  
+commission,  
+marketing,  
+bardana,  
+majuri,  
+bhadu:rent,  
+grand  
+};  
+}  
+  
+  
+/* ================= BILL NUMBER ================= */  
+  
+function farmerBillExists(no){  
+  
+return bills.some(b=>  
+b.type==="ખેડૂત બિલ" &&  
+String(b.no).trim()===String(no).trim()  
+);  
+}  
+  
+function traderBillExists(no){  
+  
+return bills.some(b=>  
+b.type==="વેપારી બિલ" &&  
+String(b.no).trim()===String(no).trim()  
+);  
+}  
+  
+  
+/* ================= FARMER SAVE ================= */  
+  
+let farmerSaving=false;  
+  
+function saveFarmer(){  
+  
+if(farmerSaving)return;  
+  
+farmerSaving=true;  
+  
+let btn=  
+document.getElementById("farmerSaveBtn");  
+  
+btn.disabled=true;  
+btn.innerText="⏳ Save થઈ રહ્યું છે...";  
+  
+setTimeout(()=>{  
+  
+try{  
+  
+calcFarmer();  
+  
+let no=  
+document.getElementById("f_no").value.trim();  
+  
+let date=  
+document.getElementById("f_date").value;  
+  
+let farmer=  
+document.getElementById("f_farmer").value.trim();  
+  
+let trader=  
+document.getElementById("f_trader").value.trim();  
+  
+if(!no){  
+alert("⚠️ બિલ નંબર નાખો.");  
+return;  
+}  
+  
+if(!farmer){  
+alert("⚠️ ખેડૂતનું નામ નાખો.");  
+return;  
+}  
+  
+if(!trader){  
+alert("⚠️ માલ લેનાર વેપારીનું નામ નાખો.");  
+return;  
+}  
+  
+if(farmerBillExists(no)){  
+alert("⚠️ આ ખેડૂત બિલ નંબર પહેલેથી Save થયેલો છે.");  
+return;  
+}  
+  
+let items=[];  
+  
+document.querySelectorAll("#farmerItems tr")  
+.forEach(row=>{  
+  
+let name=  
+row.querySelector(".f_name").value.trim();  
+  
+let bags=  
+parseFloat(row.querySelector(".f_bags").value)||0;  
+  
+let weight=  
+parseFloat(row.querySelector(".f_weight").value)||0;  
+  
+let rate=  
+parseFloat(row.querySelector(".f_rate").value)||0;  
+  
+if(name){  
+items.push({  
+name,  
+bags,  
+weight,  
+rate  
+});  
+}  
+  
+});  
+  
+if(items.length===0){  
+alert("⚠️ માલ ઉમેરો.");  
+return;  
+}  
+  
+let farmerGrand=  
+parseFloat(  
+document.getElementById("f_grand")  
+.innerText.replace("₹","")  
+)||0;  
+  
+  
+/* ખેડૂત બિલ */  
+  
+let farmerBill={  
+  
+id:"F_"+Date.now()+"_"+Math.random(),  
+  
+type:"ખેડૂત બિલ",  
+  
+no:no,  
+  
+date:date,  
+  
+gst:  
+document.getElementById("f_gst").value,  
+  
+farmer:farmer,  
+  
+trader:trader,  
+  
+plot:FIXED_PLOT,  
+  
+total:farmerGrand,  
+  
+items:items  
+  
+};  
+  
+  
+/* Auto વેપારી ગણતરી */  
+  
+let auto=  
+calculateAutoTrader(  
+items,  
+document.getElementById("f_bhadu").value  
+);  
+  
+  
+/* Auto વેપારી બિલ */  
+  
+let traderBill={  
+  
+id:"T_"+Date.now()+"_"+Math.random(),  
+  
+type:"વેપારી બિલ",  
+  
+no:no,  
+  
+date:date,  
+  
+trader:trader,  
+  
+farmer:farmer,  
+  
+plot:FIXED_PLOT,  
+  
+linkedFarmerBill:no,  
+  
+auto:true,  
+  
+total:auto.grand,  
+  
+items:items,  
+  
+charges:{  
+  
+commission:auto.commission,  
+  
+marketing:auto.marketing,  
+  
+bardana:auto.bardana,  
+  
+majuri:auto.majuri,  
+  
+bhadu:auto.bhadu  
+  
+}  
+  
+};  
+  
+  
+/* SAVE */  
+  
+bills.push(farmerBill);  
+bills.push(traderBill);  
+  
+  
+/* વેપારી ખાતામાં ઉધાર */  
+  
+transactions.push({  
+  
+id:"U_"+Date.now()+"_"+Math.random(),  
+  
+date:date,  
+  
+trader:trader,  
+  
+type:"ઉધાર",  
+  
+amount:auto.grand,  
+  
+billNo:no,  
+  
+detail:"ખેડૂત બિલ → Auto વેપારી બિલ",  
+  
+linkedFarmerBill:no,  
+  
+linkedTraderBill:traderBill.id  
+  
+});  
+  
+saveData();  
+  
+loadTraderNames();  
+  
+alert(  
+"✅ ખેડૂત બિલ Save થઈ ગયું.\n\n"+  
+"વેપારી: "+trader+  
+"\nવેપારી બિલ પણ Auto Save થયું.\n\n"+  
+"વેપારીની રકમ: ₹"+  
+auto.grand.toFixed(2)  
+);  
+  
+}  
+  
+finally{  
+  
+farmerSaving=false;  
+  
+btn.disabled=false;  
+btn.innerText="💾 બિલ Save કરો";  
+  
+}  
+  
+},300);  
+}  
+  
+  
+/* ================= TRADER ROW ================= */  
+  
+let tRows=0;  
+  
+function addTraderRow(){  
+  
+tRows++;  
+  
+let tr=document.createElement("tr");  
+  
+tr.innerHTML=`  
+  
+<td class="t_sr">${tRows}</td>  
+  
+<td>  
+<input class="t_name" placeholder="માલની જાત">  
+</td>  
+  
+<td>  
+<input class="t_bags"  
+type="number"  
+value="0"  
+oninput="calcTrader()">  
+</td>  
+  
+<td>  
+<input class="t_weight"  
+type="number"  
+value="0"  
+oninput="calcTrader()">  
+</td>  
+  
+<td>  
+<input class="t_rate"  
+type="number"  
+value="0"  
+oninput="calcTrader()">  
+</td>  
+  
+<td class="t_amount">₹ 0.00</td>  
+  
+<td class="no-print">  
+  
+<button class="red smallBtn"  
+onclick="deleteTrader(this)">  
+X  
+</button>  
+  
+</td>  
+`;  
+  
+document.getElementById("traderItems")  
+.appendChild(tr);  
+}  
+  
+function deleteTrader(btn){  
+  
+btn.closest("tr").remove();  
+  
+document.querySelectorAll("#traderItems tr")  
+.forEach((row,index)=>{  
+row.querySelector(".t_sr").innerText=index+1;  
+});  
+  
+calcTrader();  
+}  
+  
+  
+/* ================= TRADER CALC ================= */  
+  
+function calcTrader(){  
+  
+let total=0;  
+let bags=0;  
+  
+document.querySelectorAll("#traderItems tr")  
+.forEach(row=>{  
+  
+let b=parseFloat(  
+row.querySelector(".t_bags").value)||0;  
+  
+let w=parseFloat(  
+row.querySelector(".t_weight").value)||0;  
+  
+let r=parseFloat(  
+row.querySelector(".t_rate").value)||0;  
+  
+bags+=b;  
+  
+let amount=w*r/20;  
+  
+total+=amount;  
+  
+row.querySelector(".t_amount")  
+.innerText="₹ "+amount.toFixed(2);  
+  
+});  
+  
+let commission=total*1.5/100;  
+let marketing=bags*3;  
+let bardana=bags*15;  
+  
+/* મજૂરી ₹1 FIX */  
+  
+let majuri=bags*1;  
+  
+let bhadu=parseFloat(  
+document.getElementById("t_bhadu").value)||0;  
+  
+let grand=  
+total+  
+commission+  
+marketing+  
+bardana+  
+majuri+  
+bhadu;  
+  
+document.getElementById("t_total")  
+.innerText="₹ "+total.toFixed(2);  
+  
+document.getElementById("t_commission")  
+.innerText="₹ "+commission.toFixed(2);  
+  
+document.getElementById("t_marketing")  
+.innerText="₹ "+marketing.toFixed(2);  
+  
+document.getElementById("t_bardana")  
+.innerText="₹ "+bardana.toFixed(2);  
+  
+document.getElementById("t_majuri")  
+.innerText="₹ "+majuri.toFixed(2);  
+  
+document.getElementById("t_grand")  
+.innerText="₹ "+grand.toFixed(2);  
+}  
+  
+  
+/* ================= TRADER SAVE ================= */  
+  
+let traderSaving=false;  
+  
+function saveTrader(){  
+  
+if(traderSaving)return;  
+  
+traderSaving=true;  
+  
+let btn=  
+document.getElementById("traderSaveBtn");  
+  
+btn.disabled=true;  
+btn.innerText="⏳ Save થઈ રહ્યું છે...";  
+  
+setTimeout(()=>{  
+  
+try{  
+  
+calcTrader();  
+  
+let no=  
+document.getElementById("t_no").value.trim();  
+  
+let date=  
+document.getElementById("t_date").value;  
+  
+let trader=  
+document.getElementById("t_buyer").value.trim();  
+  
+if(!no){  
+alert("⚠️ બિલ નંબર નાખો.");  
+return;  
+}  
+  
+if(!trader){  
+alert("⚠️ વેપારીનું નામ નાખો.");  
+return;  
+}  
+  
+if(traderBillExists(no)){  
+alert("⚠️ આ વેપારી બિલ નંબર પહેલેથી Save થયેલો છે.");  
+return;  
+}  
+  
+let items=[];  
+  
+document.querySelectorAll("#traderItems tr")  
+.forEach(row=>{  
+  
+items.push({  
+  
+name:  
+row.querySelector(".t_name").value,  
+  
+bags:  
+parseFloat(  
+row.querySelector(".t_bags").value)||0,  
+  
+weight:  
+parseFloat(  
+row.querySelector(".t_weight").value)||0,  
+  
+rate:  
+parseFloat(  
+row.querySelector(".t_rate").value)||0  
+  
+});  
+  
+});  
+  
+let grand=  
+parseFloat(  
+document.getElementById("t_grand")  
+.innerText.replace("₹","")  
+)||0;  
+  
+let bill={  
+  
+id:"T_"+Date.now()+"_"+Math.random(),  
+  
+type:"વેપારી બિલ",  
+  
+no:no,  
+  
+date:date,  
+  
+trader:trader,  
+  
+farmer:"",  
+  
+plot:FIXED_PLOT,  
+  
+total:grand,  
+  
+items:items,  
+  
+auto:false,  
+  
+charges:{  
+  
+commission:  
+parseFloat(  
+document.getElementById("t_commission")  
+.innerText.replace("₹","")  
+)||0,  
+  
+marketing:  
+parseFloat(  
+document.getElementById("t_marketing")  
+.innerText.replace("₹","")  
+)||0,  
+  
+bardana:  
+parseFloat(  
+document.getElementById("t_bardana")  
+.innerText.replace("₹","")  
+)||0,  
+  
+majuri:  
+parseFloat(  
+document.getElementById("t_majuri")  
+.innerText.replace("₹","")  
+)||0,  
+  
+bhadu:  
+parseFloat(  
+document.getElementById("t_bhadu").value  
+)||0  
+  
+}  
+  
+};  
+  
+bills.push(bill);  
+  
+transactions.push({  
+  
+id:"U_"+Date.now()+"_"+Math.random(),  
+  
+date:date,  
+  
+trader:trader,  
+  
+type:"ઉધાર",  
+  
+amount:grand,  
+  
+billNo:no,  
+  
+detail:"વેપારી બિલ",  
+  
+linkedTraderBill:bill.id  
+  
+});  
+  
+saveData();  
+  
+alert("✅ વેપારી બિલ Save થઈ ગયું.");  
+  
+}  
+  
+finally{  
+  
+traderSaving=false;  
+  
+btn.disabled=false;  
+btn.innerText="💾 વેપારી બિલ Save કરો";  
+  
+}  
+  
+},300);  
+}  
+  
+  
+/* ================= TRADER BILLS ================= */  
+  
+function showTraderBills(){  
+  
+hideAll();  
+  
+document.getElementById("traderBillsPage")  
+.classList.remove("hidden");  
+  
+let date=  
+document.getElementById("traderBillDate").value;  
+  
+if(!date){  
+  
+date=today;  
+document.getElementById("traderBillDate").value=date;  
+  
+}  
+  
+let list=  
+bills.filter(b=>  
+b.type==="વેપારી બિલ" &&  
+b.date===date  
+);  
+  
+let box=  
+document.getElementById("traderBillList");  
+  
+box.innerHTML="";  
+  
+if(list.length===0){  
+  
+box.innerHTML=`  
+<div class="card">  
+<b>આ તારીખે કોઈ વેપારી બિલ નથી.</b>  
+</div>  
+`;  
+  
+return;  
+}  
+  
+list.forEach(b=>{  
+  
+let div=document.createElement("div");  
+  
+div.className="billCard";  
+  
+div.innerHTML=`  
+  
+<b>🧾 બિલ નંબર:</b> ${escapeHtml(b.no)}  
+<br>  
+  
+<b>👤 વેપારી:</b>  
+${escapeHtml(b.trader||"")}  
+<br>  
+  
+<b>👨‍🌾 ખેડૂત:</b>  
+${escapeHtml(b.farmer||"-")}  
+<br>  
+  
+<b>📅 તારીખ:</b> ${b.date}  
+<br>  
+  
+<b>📍 પ્લોટ નં.:</b> 40  
+<br>  
+  
+<b>💰 કુલ રકમ:</b>  
+₹${Number(b.total).toFixed(2)}  
+  
+<div class="actions no-print">  
+  
+<button class="blue"  
+onclick="printBill('${b.id}')">  
+🖨️ ઝેરોક્ષ  
+</button>  
+  
+<button class="red"  
+onclick="deleteBill('${b.id}')">  
+🗑️ Delete  
+</button>  
+  
+</div>  
+`;  
+  
+box.appendChild(div);  
+  
+});  
+}  
+  
+  
+/* ================= SAVED BILLS ================= */  
+  
+function showSavedBills(){  
+  
+hideAll();  
+  
+document.getElementById("savedBillsPage")  
+.classList.remove("hidden");  
+  
+let date=  
+document.getElementById("savedBillDate").value;  
+  
+if(!date){  
+  
+date=today;  
+document.getElementById("savedBillDate").value=date;  
+  
+}  
+  
+let list=  
+bills.filter(b=>b.date===date);  
+  
+let box=  
+document.getElementById("savedBillList");  
+  
+box.innerHTML="";  
+  
+if(list.length===0){  
+  
+box.innerHTML=`  
+<div class="card">  
+<b>આ તારીખે કોઈ સેવ થયેલું બિલ નથી.</b>  
+</div>  
+`;  
+  
+return;  
+}  
+  
+list.forEach(b=>{  
+  
+let div=document.createElement("div");  
+  
+div.className="billCard";  
+  
+div.innerHTML=`  
+  
+<b>🧾 બિલ નંબર:</b>  
+${escapeHtml(b.no)}  
+  
+<br>  
+  
+<b>📄 પ્રકાર:</b>  
+${escapeHtml(b.type)}  
+${b.auto ? " ⚡ Auto" : ""}  
+  
+<br>  
+  
+<b>👤 નામ:</b>  
+${escapeHtml(b.trader || b.farmer || "")}  
+  
+<br>  
+  
+<b>📅 તારીખ:</b>  
+${b.date}  
+  
+<br>  
+  
+<b>📍 પ્લોટ નં.:</b> 40  
+  
+<br>  
+  
+<b>💰 રકમ:</b>  
+₹${Number(b.total).toFixed(2)}  
+  
+<div class="actions no-print">  
+  
+<button class="blue"  
+onclick="printBill('${b.id}')">  
+🖨️ ઝેરોક્ષ  
+</button>  
+  
+<button class="red"  
+onclick="deleteBill('${b.id}')">  
+🗑️ Delete  
+</button>  
+  
+</div>  
+`;  
+  
+box.appendChild(div);  
+  
+});  
+}  
+  
+  
+/* ================= PRINT ================= */  
+  
+let printReturnPage="home";  
+  
+function printBill(id){  
+  
+let bill=  
+bills.find(b=>String(b.id)===String(id));  
+  
+if(!bill){  
+  
+alert("❌ બિલ મળ્યું નથી.");  
+return;  
+}  
+  
+printReturnPage=  
+document.getElementById("traderBillsPage")  
+.classList.contains("hidden")  
+?  
+"savedBillsPage"  
+:  
+"traderBillsPage";  
+  
+hideAll();  
+  
+document.getElementById("printPage")  
+.classList.remove("hidden");  
+  
+let html="";  
+  
+if(bill.type==="ખેડૂત બિલ")  
+html=farmerPrintHTML(bill);  
+else  
+html=traderPrintHTML(bill);  
+  
+document.getElementById("printContent")  
+.innerHTML=html;  
+  
+}  
+  
+function goBackFromPrint(){  
+  
+hideAll();  
+  
+document.getElementById(printReturnPage)  
+.classList.remove("hidden");  
+  
+if(printReturnPage==="traderBillsPage")  
+showTraderBills();  
+else  
+showSavedBills();  
+  
+}  
+  
+  
+/* ================= FARMER PRINT ================= */  
+  
+function farmerPrintHTML(b){  
+  
+let rows="";  
+  
+(b.items||[]).forEach((x,i)=>{  
+  
+let amount=  
+Number(x.weight||0)*  
+Number(x.rate||0)/20;  
+  
+rows+=`  
+  
+<tr>  
+<td>${i+1}</td>  
+<td>${escapeHtml(x.name)}</td>  
+<td>${x.bags}</td>  
+<td>${x.weight}</td>  
+<td>${x.rate}</td>  
+<td>₹${amount.toFixed(2)}</td>  
+</tr>  
+`;  
+  
+});  
+  
+let bardana=  
+(b.items||[]).reduce(  
+(s,x)=>s+Number(x.bags||0),0  
+)*15;  
+  
+return `  
+  
+<h2>|| શ્રી ગણેશાય નમઃ ||</h2>  
+  
+<div class="title">ખેડૂત બિલ</div>  
+  
+<p><b>બિલ નંબર:</b> ${escapeHtml(b.no)}</p>  
+  
+<p><b>તારીખ:</b> ${b.date}</p>  
+  
+<p><b>ખેડૂત:</b> ${escapeHtml(b.farmer||"")}</p>  
+  
+<p><b>વેપારી:</b> ${escapeHtml(b.trader||"")}</p>  
+  
+<p><b>પ્લોટ નં.:</b> 40</p>  
+  
+<table>  
+  
+<tr>  
+<th>અ.નં.</th>  
+<th>માલ</th>  
+<th>થેલા</th>  
+<th>વજન</th>  
+<th>ભાવ</th>  
+<th>કિંમત</th>  
+</tr>  
+  
+${rows}  
+  
+</table>  
+  
+<div class="summary">  
+  
+<div>  
+<b>કુલ</b>  
+<span>  
+₹${(  
+Number(b.total)-bardana  
+).toFixed(2)}  
+</span>  
+</div>  
+  
+<div>  
+<b>વારદાન</b>  
+<span>₹${bardana.toFixed(2)}</span>  
+</div>  
+  
+<div class="big">  
+<b>કુલ રકમ</b>  
+<span>₹${Number(b.total).toFixed(2)}</span>  
+</div>  
+  
+</div>  
+  
+<br><br>  
+  
+<div class="sign">  
+  
+<div>  
+_________________<br>  
+ખરીદનારની સહી  
+</div>  
+  
+<div>  
+_________________<br>  
+વેપારીની સહી  
+</div>  
+  
+</div>  
+`;  
+}  
+  
+  
+/* ================= TRADER PRINT ================= */  
+  
+function traderPrintHTML(b){  
+  
+let rows="";  
+  
+(b.items||[]).forEach((x,i)=>{  
+  
+let amount=  
+Number(x.weight||0)*  
+Number(x.rate||0)/20;  
+  
+rows+=`  
+  
+<tr>  
+<td>${i+1}</td>  
+<td>${escapeHtml(x.name)}</td>  
+<td>${x.bags}</td>  
+<td>${x.weight}</td>  
+<td>${x.rate}</td>  
+<td>₹${amount.toFixed(2)}</td>  
+</tr>  
+`;  
+  
+});  
+  
+let c=b.charges||{};  
+  
+return `  
+  
+<h2>|| શ્રી ગણેશાય નમઃ ||</h2>  
+  
+<div class="title">વેપારી બિલ</div>  
+  
+<p><b>બિલ નંબર:</b> ${escapeHtml(b.no)}</p>  
+  
+<p><b>તારીખ:</b> ${b.date}</p>  
+  
+<p><b>વેપારી:</b> ${escapeHtml(b.trader||"")}</p>  
+  
+<p><b>ખેડૂત:</b> ${escapeHtml(b.farmer||"-")}</p>  
+  
+<p><b>પ્લોટ નં.:</b> 40</p>  
+  
+<table>  
+  
+<tr>  
+<th>અ.નં.</th>  
+<th>માલ</th>  
+<th>થેલા</th>  
+<th>વજન</th>  
+<th>ભાવ</th>  
+<th>કિંમત</th>  
+</tr>  
+  
+${rows}  
+  
+</table>  
+  
+<div class="summary">  
+  
+<div>  
+<b>કુલ કિંમત</b>  
+<span>  
+₹${Number(c.total||b.total).toFixed(2)}  
+</span>  
+</div>  
+  
+<div>  
+<b>કમિશન 1.5%</b>  
+<span>₹${Number(c.commission||0).toFixed(2)}</span>  
+</div>  
+  
+<div>  
+<b>માર્કેટ ફી</b>  
+<span>₹${Number(c.marketing||0).toFixed(2)}</span>  
+</div>  
+  
+<div>  
+<b>વારદાન</b>  
+<span>₹${Number(c.bardana||0).toFixed(2)}</span>  
+</div>  
+  
+<div>  
+<b>મજૂરી</b>  
+<span>₹${Number(c.majuri||0).toFixed(2)}</span>  
+</div>  
+  
+<div>  
+<b>ભાડું</b>  
+<span>₹${Number(c.bhadu||0).toFixed(2)}</span>  
+</div>  
+  
+<div class="big">  
+<b>કુલ રકમ</b>  
+<span>₹${Number(b.total).toFixed(2)}</span>  
+</div>  
+  
+</div>  
+  
+<br><br>  
+  
+<div class="sign">  
+  
+<div>  
+_________________<br>  
+લેનાર વેપારીની સહી  
+</div>  
+  
+<div>  
+_________________<br>  
+વેપારીની સહી  
+</div>  
+  
+</div>  
+`;  
+}  
+  
+  
+/* ================= DELETE ================= */  
+  
+function deleteBill(id){  
+  
+let bill=  
+bills.find(b=>String(b.id)===String(id));  
+  
+if(!bill){  
+alert("❌ બિલ મળ્યું નથી.");  
+return;  
+}  
+  
+let ok=confirm(  
+"⚠️ શું તમે આ બિલ Delete કરવા માંગો છો?\n\n"+  
+"બિલ નંબર: "+bill.no+  
+"\nનામ: "+(bill.trader||bill.farmer||"")+  
+"\nરકમ: ₹"+Number(bill.total).toFixed(2)+  
+"\n\nDelete પછી પાછું લાવી શકાશે નહીં."  
+);  
+  
+if(!ok)return;  
+  
+  
+/* ખેડૂત બિલ delete */  
+  
+if(bill.type==="ખેડૂત બિલ"){  
+  
+let autoTraderIds=  
+bills.filter(b=>  
+b.type==="વેપારી બિલ" &&  
+b.auto===true &&  
+String(b.linkedFarmerBill)===String(bill.no)  
+).map(b=>b.id);  
+  
+bills=  
+bills.filter(b=>  
+String(b.id)!==String(bill.id) &&  
+!autoTraderIds.includes(b.id)  
+);  
+  
+transactions=  
+transactions.filter(t=>  
+String(t.linkedFarmerBill)!==  
+String(bill.no)  
+);  
+  
+}  
+  
+/* વેપારી બિલ delete */  
+  
+else{  
+  
+bills=  
+bills.filter(b=>  
+String(b.id)!==String(bill.id)  
+);  
+  
+transactions=  
+transactions.filter(t=>  
+String(t.linkedTraderBill)!==  
+String(bill.id)  
+);  
+  
+}  
+  
+saveData();  
+  
+alert("✅ બિલ Delete થઈ ગયું.");  
+  
+if(!document.getElementById("traderBillsPage")  
+.classList.contains("hidden"))  
+showTraderBills();  
+else  
+showSavedBills();  
+  
+}  
+  
+  
+/* ================= SAVE DATA ================= */  
+  
+function saveData(){  
+  
+localStorage.setItem(  
+"allBills",  
+JSON.stringify(bills)  
+);  
+  
+localStorage.setItem(  
+"transactions",  
+JSON.stringify(transactions)  
+);  
+  
+}  
+  
+  
+/* ================= ESCAPE ================= */  
+  
+function escapeHtml(value){  
+  
+return String(value||"")  
+.replace(/&/g,"&amp;")  
+.replace(/</g,"&lt;")  
+.replace(/>/g,"&gt;")  
+.replace(/"/g,"&quot;")  
+.replace(/'/g,"&#039;");  
+  
+}  
+  
+  
+/* ================= START ================= */  
+  
+addFarmerRow();  
+addTraderRow();  
+  
+calcFarmer();  
+calcTrader();  
+  
+loadTraderNames();  
+  
+</script>  </body>  
+</html>
